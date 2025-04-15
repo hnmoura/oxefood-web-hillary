@@ -1,22 +1,23 @@
 import InputMask from 'comigo-tech-react-input-mask';
 import React from "react";
-import { Button, Container, Divider, Form, Icon } from 'semantic-ui-react';
+import { Button, Container, Divider, Form, Icon, TextArea } from 'semantic-ui-react';
 
-export default function FormCliente () {
+
+export default function FormCliente() {
 
     return (
 
         <div>
 
-            <div style={{marginTop: '3%'}}>
+            <div style={{ marginTop: '3%' }}>
 
                 <Container textAlign='justified' >
 
-                    <h2> <span style={{color: 'darkgray'}}> Cliente &nbsp;<Icon name='angle double right' size="small" /> </span> Cadastro </h2>
+                    <h2> <span style={{ color: 'darkgray' }}> Produto &nbsp;<Icon name='angle double right' size="small" /> </span> Cadastro </h2>
 
                     <Divider />
 
-                    <div style={{marginTop: '4%'}}>
+                    <div style={{ marginTop: '4%' }}>
 
                         <Form>
 
@@ -25,59 +26,77 @@ export default function FormCliente () {
                                 <Form.Input
                                     required
                                     fluid
-                                    label='Nome'
+                                    label='Titulo'
                                     maxLength="100"
+                                    placeholder=""
                                 />
 
                                 <Form.Input
                                     required
                                     fluid
-                                    label='CPF'>
+                                    label='Codigo do Produto'>
+                                </Form.Input>
+
+
+
+                                <Form.Input
+                                    fluid
+                                    label='Valor unitário'
+                                    width={6}>
+                                </Form.Input>
+
+                                <Form.Input
+                                    fluid
+                                    label='Tempo de Entrega Mínimo em Minutos'
+                                    width={6}>
                                     <InputMask
-                                        required
-                                        mask="999.999.999-99"
-                                    /> 
-                                </Form.Input>
-
-                            </Form.Group>
-                            
-                            <Form.Group>
-
-                                <Form.Input
-                                    fluid
-                                    label='Fone Celular'
-                                    width={6}>
-                                    <InputMask 
-                                        mask="(99) 9999.9999"
-                                    /> 
+                                        placeholder="30"
+                                    />
                                 </Form.Input>
 
                                 <Form.Input
                                     fluid
-                                    label='Fone Fixo'
-                                    width={6}>
-                                    <InputMask 
-                                        mask="(99) 9999.9999"
-                                    /> 
-                                </Form.Input>
-
-                                <Form.Input
-                                    fluid
-                                    label='Data Nascimento'
+                                    label='Tempo de Entrega Máximo em Minutos'
                                     width={6}
                                 >
-                                    <InputMask 
-                                        mask="99/99/9999" 
-                                        maskChar={null}
-                                        placeholder="Ex: 20/03/1985"
-                                    /> 
+                                    <InputMask
+                                        placeholder="40"
+                                    />
                                 </Form.Input>
 
                             </Form.Group>
-                        
+                            <TextArea
+                                label="Descrição"
+                                placeholder='Tell us more'
+                            />
+
+                            <Form.Input
+                                    fluid
+                                    label='Valor unitário'
+                                    width={6}>
+                                </Form.Input>
+
+                                <Form.Input
+                                    fluid
+                                    label='Tempo de Entrega Mínimo em Minutos'
+                                    width={6}>
+                                    <InputMask
+                                        placeholder="30"
+                                    />
+                                </Form.Input>
+
+                                <Form.Input
+                                    fluid
+                                    label='Tempo de Entrega Máximo em Minutos'
+                                    width={6}
+                                >
+                                    <InputMask
+                                        placeholder="40"
+                                    />
+                                </Form.Input>
                         </Form>
-                        
-                        <div style={{marginTop: '4%'}}>
+
+                        <div style={{ marginTop: '4%' }}>
 
                             <Button
                                 type="button"
@@ -90,7 +109,7 @@ export default function FormCliente () {
                                 <Icon name='reply' />
                                 Voltar
                             </Button>
-                                
+
                             <Button
                                 inverted
                                 circular
@@ -106,7 +125,7 @@ export default function FormCliente () {
                         </div>
 
                     </div>
-                    
+
                 </Container>
             </div>
         </div>
