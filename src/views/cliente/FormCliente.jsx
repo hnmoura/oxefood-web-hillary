@@ -1,9 +1,16 @@
 import InputMask from 'comigo-tech-react-input-mask';
 import axios from "axios";
-import React from "react";
+import InputMask from 'react-input-mask';
+import React {useState} from "react";
 import { Button, Container, Divider, Form, Icon } from 'semantic-ui-react';
 
 export default function FormCliente () {
+
+   const [nome, setNome] = useState();
+   const [cpf, setCpf] = useState();
+   const [dataNascimento, setDataNascimento] = useState();
+   const [foneCelular, setFoneCelular] = useState();
+   const [foneFixo, setFoneFixo] = useState();
 
     return (
 
