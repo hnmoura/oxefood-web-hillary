@@ -1,6 +1,7 @@
 import InputMask from 'comigo-tech-react-input-mask';
 import React from "react";
 import { Button, Container, Divider, Form, Icon, TextArea } from 'semantic-ui-react';
+import MenuSistema from '../../components/MenuSistema';
 
 
 export default function FormCliente() {
