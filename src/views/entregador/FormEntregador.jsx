@@ -10,7 +10,7 @@ import {
 } from "semantic-ui-react";
 import MenuSistema from "../../MenuSistema";
 import axios from "axios";
-import moment from "moment";
+//import moment from "moment";//
 import { Link, useLocation } from "react-router-dom";
 
 const options = [
@@ -75,7 +75,7 @@ export default function FormEntregador() {
       nome: nome,
       cpf: cpf,
       rg: rg,
-      dataNascimento: moment(dataNascimento, "DD/MM/YYYY").format("DD/MM/YYYY"),
+      //dataNascimento: moment(dataNascimento, "DD/MM/YYYY").format("DD/MM/YYYY"),//
       foneCelular: foneCelular,
       foneFixo: foneFixo,
       qtdEntregasRealizadas: parseInt(qtdEntregasRealizadas || "0", 10),
