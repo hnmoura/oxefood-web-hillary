@@ -74,7 +74,7 @@ export default function ListCliente() {
                             as={Link}
                             to='/form-cliente'
                         />
-                        <br /><br /><br />
+                        <br /> <br /><br />
 
                         <Table color='orange' sortable celled>
 
