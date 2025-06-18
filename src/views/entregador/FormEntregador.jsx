@@ -12,6 +12,7 @@ import MenuSistema from "../../MenuSistema";
 import axios from "axios";
 //import moment from "moment";//
 import { Link, useLocation } from "react-router-dom";
+import { notifySuccess } from "../util/Util";
 
 const options = [
   { key: "", text: "", value: "" },
@@ -100,20 +101,34 @@ export default function FormEntregador() {
           entregadorRequest
         )
         .then((response) => {
-          console.log("Entregador alterado com sucesso.");
+          notifySuccess("Entregador alterado com sucesso.");
         })
         .catch((error) => {
-          console.log("Erro ao alter um Entregador.");
+          if (error.response.data.errors != undefined) {
+       		for (let i = 0; i < error.response.data.errors.length; i++) {
+	       		notifyError(error.response.data.errors[i].defaultMessage)
+	    	}
+	} else {
+		notifyError(error.response.data.message)
+	}
+
         });
     } else {
       //Cadastro:
       axios
         .post("http://localhost:8080/api/entregador", entregadorRequest)
         .then((response) => {
-          console.log("Entregador cadastrado com sucesso.");
+          notifySuccess("Entregador cadastrado com sucesso.");
         })
         .catch((error) => {
-          console.log("Erro ao incluir o Entregador.");
+          if (error.response.data.errors != undefined) {
+       		for (let i = 0; i < error.response.data.errors.length; i++) {
+	       		notifyError(error.response.data.errors[i].defaultMessage)
+	    	}
+	} else {
+		notifyError(error.response.data.message)
+	}
+
         });
     }
   }
