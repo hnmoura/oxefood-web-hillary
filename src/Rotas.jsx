@@ -16,15 +16,15 @@ function Rotas() {
                     path="/home" element={
                         <ProtectedRoute>
                             <Home /> </ProtectedRoute>} />
-                <Route 
-                path ="/list-cliente"
-                element={
-                    <ProtectedRoute> 
-                        <ListCliente/>
-                    </ProtectedRoute>
-                } 
-                />           
-                <Route path="form-cliente" element={<FormCliente />} />
+                <Route
+                    path="/list-cliente"
+                    element={
+                        <ProtectedRoute>
+                            <ListCliente />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="form-cliente" element={<FormCliente />} /> 
                 <Route path="form-produto" element={<FormProduto />} />
                 <Route path="form-entregador" element={<FormEntregador />} />
             </Routes>
