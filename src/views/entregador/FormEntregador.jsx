@@ -1,49 +1,40 @@
-import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { notifyError, notifySuccess } from "../../views/util/Util";
 import InputMask from "comigo-tech-react-input-mask";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import {
   Button,
   Container,
   Divider,
   Form,
+  FormGroup,
+  FormRadio,
   Icon,
-  FormSelect,
 } from "semantic-ui-react";
 import MenuSistema from "../../MenuSistema";
-import axios from "axios";
-//import moment from "moment";//
-import { Link, useLocation } from "react-router-dom";
-import { notifySuccess } from "../util/Util";
-
-const options = [
-  { key: "", text: "", value: "" },
-  { key: "P", text: "Pernambuco", value: "PE" },
-  { key: "S", text: "São Paulo", value: "SP" },
-  { key: "C", text: "Santa Catarina", value: "SC" },
-];
 
 export default function FormEntregador() {
+  const [nome, setNome] = useState();
+  const [cpf, setCpf] = useState();
+  const [rg, setRg] = useState();
+  const [dataNascimento, setDataNascimento] = useState();
+  const [foneCelular, setFoneCelular] = useState();
+  const [foneFixo, setFoneFixo] = useState();
+  const [qtdEntregasRealizadas, setQtdEntregasRealizadas] = useState();
+  const [valorFrete, setValorFrete] = useState();
+  const [enderecoRua, setEnderecoRua] = useState();
+  const [enderecoNumero, setEnderecoNumero] = useState();
+  const [enderecoComplemento, setEnderecoComplemento] = useState();
+  const [enderecoBairro, setEnderecoBairro] = useState();
+  const [enderecoCidade, setEnderecoCidade] = useState();
+  const [enderecoCep, setEnderecoCep] = useState();
+  const [enderecoUf, setEnderecoUf] = useState();
+  const [ativo, setAtivo] = useState(true);
   const { state } = useLocation();
   const [idEntregador, setIdEntregador] = useState();
 
-  const [nome, setNome] = useState("");
-  const [cpf, setCpf] = useState("");
-  const [rg, setRg] = useState("");
-  const [dataNascimento, setDataNascimento] = useState("");
-  const [foneCelular, setFoneCelular] = useState("");
-  const [foneFixo, setFoneFixo] = useState("");
-  const [qtdEntregasRealizadas, setQtdEntregasRealizadas] = useState("");
-  const [valorFrete, setValorFrete] = useState("");
-  const [enderecoRua, setEnderecoRua] = useState("");
-  const [enderecoNumero, setEnderecoNumero] = useState("");
-  const [enderecoBairro, setEnderecoBairro] = useState("");
-  const [enderecoCidade, setEnderecoCidade] = useState("");
-  const [enderecoCep, setEnderecoCep] = useState("");
-  const [enderecoUf, setEnderecoUf] = useState("");
-  const [enderecoComplemento, setEnderecoComplemento] = useState("");
-  const [ativo, setAtivo] = useState(true);
-
   useEffect(() => {
-    console.log("state recebido:", state);
     if (state != null && state.id != null) {
       axios
         .get("http://localhost:8080/api/entregador/" + state.id)
@@ -52,44 +43,43 @@ export default function FormEntregador() {
           setNome(response.data.nome);
           setCpf(response.data.cpf);
           setRg(response.data.rg);
-          setDataNascimento(response.data.dataNascimento);
+          setDataNascimento(formatarData(response.data.dataNascimento));
           setFoneCelular(response.data.foneCelular);
           setFoneFixo(response.data.foneFixo);
-
           setQtdEntregasRealizadas(response.data.qtdEntregasRealizadas);
           setValorFrete(response.data.valorFrete);
           setEnderecoRua(response.data.enderecoRua);
+          setEnderecoComplemento(response.data.enderecoComplemento);
           setEnderecoNumero(response.data.enderecoNumero);
           setEnderecoBairro(response.data.enderecoBairro);
           setEnderecoCidade(response.data.enderecoCidade);
           setEnderecoCep(response.data.enderecoCep);
-
           setEnderecoUf(response.data.enderecoUf);
-          setEnderecoComplemento(response.data.enderecoComplemento);
           setAtivo(response.data.ativo);
         });
     }
   }, [state]);
 
   function salvar() {
-    const entregadorRequest = {
+    //Função cria um objeto e coloca na variavel clientRequest(backend)
+
+    let EntregadorRequest = {
+      //Como se fosse o Json (com os dados do cliente)
       nome: nome,
       cpf: cpf,
       rg: rg,
-      //dataNascimento: moment(dataNascimento, "DD/MM/YYYY").format("DD/MM/YYYY"),//
+      dataNascimento: dataNascimento,
       foneCelular: foneCelular,
       foneFixo: foneFixo,
-      qtdEntregasRealizadas: parseInt(qtdEntregasRealizadas || "0", 10),
-      valorFrete: parseFloat(
-      valorFrete?.replace("R$", "").replace(",", ".") || "0"
-      ),
+      qtdEntregasRealizadas: qtdEntregasRealizadas,
+      valorFrete: valorFrete,
       enderecoRua: enderecoRua,
       enderecoNumero: enderecoNumero,
+      enderecoComplemento: enderecoComplemento,
       enderecoBairro: enderecoBairro,
       enderecoCidade: enderecoCidade,
       enderecoCep: enderecoCep,
       enderecoUf: enderecoUf,
-      enderecoComplemento: enderecoComplemento,
       ativo: ativo,
     };
 
@@ -98,44 +88,57 @@ export default function FormEntregador() {
       axios
         .put(
           "http://localhost:8080/api/entregador/" + idEntregador,
-          entregadorRequest
+          EntregadorRequest
         )
         .then((response) => {
           notifySuccess("Entregador alterado com sucesso.");
         })
         .catch((error) => {
-          if (error.response.data.errors != undefined) {
-       		for (let i = 0; i < error.response.data.errors.length; i++) {
-	       		notifyError(error.response.data.errors[i].defaultMessage)
-	    	}
-	} else {
-		notifyError(error.response.data.message)
-	}
+          // console.log('Erro ao alterar um entregador.')
 
+          if (error.response.data.errors != undefined) {
+            for (let i = 0; i < error.response.data.errors.length; i++) {
+              notifyError(error.response.data.errors[i].defaultMessage);
+            }
+          } else {
+            notifyError(error.response.data.message);
+          }
         });
     } else {
       //Cadastro:
       axios
-        .post("http://localhost:8080/api/entregador", entregadorRequest)
+        .post("http://localhost:8080/api/entregador", EntregadorRequest)
         .then((response) => {
           notifySuccess("Entregador cadastrado com sucesso.");
         })
         .catch((error) => {
-          if (error.response.data.errors != undefined) {
-       		for (let i = 0; i < error.response.data.errors.length; i++) {
-	       		notifyError(error.response.data.errors[i].defaultMessage)
-	    	}
-	} else {
-		notifyError(error.response.data.message)
-	}
+          //   console.log("Erro ao incluir o entregador.");
 
+          if (error.response.data.errors != undefined) {
+            for (let i = 0; i < error.response.data.errors.length; i++) {
+              notifyError(error.response.data.errors[i].defaultMessage);
+            }
+          } else {
+            notifyError(error.response.data.message);
+          }
+          
         });
     }
+  }
+
+  function formatarData(dataParam) {
+    if (dataParam === null || dataParam === "" || dataParam === undefined) {
+      return "";
+    }
+
+    let arrayData = dataParam.split("-");
+    return arrayData[2] + "/" + arrayData[1] + "/" + arrayData[0];
   }
 
   return (
     <div>
       <MenuSistema tela={"entregador"} />
+
       <div style={{ marginTop: "3%" }}>
         <Container textAlign="justified">
           {idEntregador === undefined && (
@@ -160,166 +163,168 @@ export default function FormEntregador() {
               Alteração
             </h2>
           )}
+
           <Divider />
 
           <div style={{ marginTop: "4%" }}>
             <Form>
-              <Form.Group widths="equal">
+              <Form.Group>
                 <Form.Input
                   required
-                  width={8}
+                  fluid
                   label="Nome"
-                  maxLength="100"
+                  width={10}
                   value={nome}
                   onChange={(e) => setNome(e.target.value)}
                 />
-                <Form.Field width={3} required>
-                  <label>CPF</label>
+
+                <Form.Input required width={3} fluid label="CPF">
                   <InputMask
+                    required
                     mask="999.999.999-99"
                     value={cpf}
                     onChange={(e) => setCpf(e.target.value)}
                   />
-                </Form.Field>
-                <Form.Field width={3} required>
-                  <label>RG</label>
-                  <InputMask
-                    mask="99.999.999"
-                    value={rg}
-                    onChange={(e) => setRg(e.target.value)}
-                  />
-                </Form.Field>
-              </Form.Group>
+                </Form.Input>
 
-              <Form.Group widths="equal">
-                <Form.Field width={6}>
-                  <label>Data Nascimento</label>
+                <Form.Input
+                  fluid
+                  label="RG"
+                  width={4}
+                  value={rg}
+                  onChange={(e) => setRg(e.target.value)}
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Input fluid label="DT Nascimento" width={4}>
                   <InputMask
-                    mask="99-99-9999"
+                    mask="99/99/9999"
                     maskChar={null}
                     placeholder="Ex: 20/03/1985"
                     value={dataNascimento}
                     onChange={(e) => setDataNascimento(e.target.value)}
                   />
-                </Form.Field>
-                <Form.Field width={3} required>
-                  <label>Fone Celular</label>
+                </Form.Input>
+
+                <Form.Input required fluid label="Fone Celular" width={6}>
                   <InputMask
-                    mask="(99) 99999-9999"
+                    mask="(99) 9999.9999"
                     value={foneCelular}
                     onChange={(e) => setFoneCelular(e.target.value)}
                   />
-                </Form.Field>
-                <Form.Field width={3}>
-                  <label>Fone Fixo</label>
+                </Form.Input>
+
+                <Form.Input fluid label="Fone Fixo" width={6}>
                   <InputMask
-                    mask="(99) 99999-9999"
+                    mask="(99) 9999.9999"
                     value={foneFixo}
                     onChange={(e) => setFoneFixo(e.target.value)}
                   />
-                </Form.Field>
+                </Form.Input>
+
                 <Form.Input
-                  width={3}
+                  fluid
                   label="QTD Entregas Realizadas"
+                  width={6}
                   value={qtdEntregasRealizadas}
                   onChange={(e) => setQtdEntregasRealizadas(e.target.value)}
-                />
-                <Form.Field width={3}>
-                  <label>Valor Por Frete</label>
-                  <InputMask
-                    mask="R$99,99"
-                    value={valorFrete}
-                    onChange={(e) => setValorFrete(e.target.value)}
-                  />
-                </Form.Field>
-              </Form.Group>
+                ></Form.Input>
 
-              <Form.Group widths="equal">
                 <Form.Input
-                  width={12}
+                  fluid
+                  label="Valor Por Frete"
+                  width={6}
+                  value={valorFrete}
+                  onChange={(e) => setValorFrete(e.target.value)}
+                ></Form.Input>
+              </Form.Group>
+              <Form.Group>
+                <Form.Input
+                  fluid
                   label="Rua"
+                  width={14}
                   value={enderecoRua}
                   onChange={(e) => setEnderecoRua(e.target.value)}
-                />
+                ></Form.Input>
+
                 <Form.Input
-                  required
-                  width={3}
+                  fluid
                   label="Número"
+                  width={3}
                   value={enderecoNumero}
                   onChange={(e) => setEnderecoNumero(e.target.value)}
-                />
-              </Form.Group>
-
-              <Form.Group widths="equal">
-                <Form.Input
-                  width={10}
-                  label="Bairro"
-                  value={enderecoBairro}
-                  onChange={(e) => setEnderecoBairro(e.target.value)}
-                />
-                <Form.Input
-                  width={10}
-                  label="Cidade"
-                  value={enderecoCidade}
-                  onChange={(e) => setEnderecoCidade(e.target.value)}
-                />
-                <Form.Field width={3} required>
-                  <label>CEP</label>
-                  <InputMask
-                    mask="99999-999"
-                    value={enderecoCep}
-                    onChange={(e) => setEnderecoCep(e.target.value)}
-                  />
-                </Form.Field>
+                ></Form.Input>
               </Form.Group>
 
               <Form.Group>
-                <FormSelect
-                  width={16}
-                  label="UF"
-                  options={options}
-                  placeholder="Selecione o estado"
-                  value={enderecoUf}
-                  onChange={(e, { value }) => setEnderecoUf(value)}
-                />
+                <Form.Input
+                  fluid
+                  label="Bairro"
+                  width={12}
+                  value={enderecoBairro}
+                  onChange={(e) => setEnderecoBairro(e.target.value)}
+                ></Form.Input>
+
+                <Form.Input
+                  fluid
+                  label="Cidade"
+                  width={13}
+                  value={enderecoCidade}
+                  onChange={(e) => setEnderecoCidade(e.target.value)}
+                ></Form.Input>
+
+                <Form.Input
+                  fluid
+                  label="CEP"
+                  width={4}
+                  value={enderecoCep}
+                  onChange={(e) => setEnderecoCep(e.target.value)}
+                ></Form.Input>
               </Form.Group>
 
               <Form.Input
-                required
+                fluid
+                label="UF"
+                width={60}
+                value={enderecoUf}
+                onChange={(e) => setEnderecoUf(e.target.value)}
+              ></Form.Input>
+
+              <Form.Input
                 fluid
                 label="Complemento"
-                maxLength="50"
+                width={60}
                 value={enderecoComplemento}
                 onChange={(e) => setEnderecoComplemento(e.target.value)}
-              />
+              ></Form.Input>
 
-              <Form.Group inline>
-                <label>
-                  <b>Ativo:</b>
-                </label>
-                <Form.Radio
+              <FormGroup inline>
+                <label>Ativo:</label>
+                <FormRadio
                   label="Sim"
-                  checked={ativo}
-                  onChange={() => setAtivo(true)}
+                  checked={ativo === true}
+                  onChange={(e) => setAtivo(true)}
                 />
-                <Form.Radio
+                <FormRadio
                   label="Não"
-                  checked={!ativo}
-                  onChange={() => setAtivo(false)}
+                  checked={ativo === false}
+                  onChange={(e) => setAtivo(false)}
                 />
-              </Form.Group>
+              </FormGroup>
             </Form>
 
             <div style={{ marginTop: "4%" }}>
               <Link to={"/list-entregador"}>
                 <Button
+                  type="button"
                   inverted
                   circular
                   icon
                   labelPosition="left"
                   color="orange"
                 >
-                  <Icon name="reply" /> Voltar
+                  <Icon name="reply" />
+                  Voltar
                 </Button>
               </Link>
 
@@ -330,7 +335,7 @@ export default function FormEntregador() {
                 labelPosition="left"
                 color="blue"
                 floated="right"
-                onClick={salvar}
+                onClick={() => salvar()}
               >
                 <Icon name="save" />
                 Salvar
